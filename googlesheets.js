@@ -60,6 +60,32 @@ var sheet = function (url, ID, name) {
 		return true;
 	}
 
+	/* Method: --getRow--
+	 *
+	 * Description: Returns an array with the values of the row
+	 *
+	 * Input: Integer index
+	 *
+	 * Output: Array of strings; missing values returned as empty strings; empty array if empty row and -1 if out of bounds
+	 */
+	this.getRow = function(index) {
+		if (index > this.size - 1 || index < 0) {
+			return -1;
+		} else if (!this.body[index]) {
+			return [];
+		} else {
+			var row = [];
+			for (var i = 0; i < this.width; i++) {
+				if (this.body[index][i]) {
+					row.push(this.body[index][i]);
+				} else {
+					row.push("");
+				}
+			}
+			return row;
+		}
+	}
+
 	/* Method: -- send --
 	 * 
 	 * Description: Sends the object to the Google Sheet
@@ -76,7 +102,7 @@ var sheet = function (url, ID, name) {
 		};
 		request(settings, function (error, response, body) {
 			if (error) console.log(error);
-			console.log(body);
+			//console.log(body);
 		});
 		return;
 	}
@@ -103,7 +129,7 @@ var sheet = function (url, ID, name) {
 			if (error) console.log(error);
 			this.ID = sID;
 			this.name = sName;
-			console.log(body);
+			//console.log(body);
 		});
 		return;
 	}
@@ -181,6 +207,35 @@ var sheet = function (url, ID, name) {
 		this.ID = ID;
 		this.name = name;
 		this.getSheet(callback());
+	}
+
+	/* Method: -- printSheet --
+	 *
+	 * Description: Prints out the sheet data in a structured form
+	 *
+	 * Input: None
+	 *
+	 * Output: None; spreadsheet printed to console
+	 */
+	this.printSheet = function() {
+		console.log("\n----Spreadsheet----");
+		console.log("  Name: " + this.name);
+		for (var i = 0; i < this.size; i++) {
+			if (this.body[i]) {
+				var row = "    Row " + i + ": ";
+				for (var j = 0; j < this.width; j++) {
+					if (!this.body[i][j]) {
+						row += " ; ";
+						continue;
+					}
+					row += this.body[i][j] + "; ";
+				}
+				console.log(row);
+			} else {
+				console.log("    --empty row--")
+			}
+		}
+		console.log("-------------------");
 	}
 
 	
